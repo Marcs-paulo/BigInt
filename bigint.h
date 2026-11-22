@@ -81,32 +81,32 @@ public:
     //Funções de consulta (implementado no .cpp)
     int operator[](int i) const;
 
-//Modulo (abs)
-friend BigInt abs(const BigInt &X);
-//Operadores unarios
-const BigInt& operator+() const {return *this;};
-BigInt operator-() const;
-BigInt operator!() const;
-//Operadores matemáticos
-friend BigInt operator+(const BigInt &A,const BigInt &B);
-friend BigInt operator-(const BigInt &A,const BigInt &B);
-friend BigInt operator*(const BigInt &A,const BigInt &B);
+    //Modulo (abs)
+    friend BigInt abs(const BigInt &X);
+    //Operadores unarios
+    const BigInt& operator+() const {return *this;};
+    BigInt operator-() const;
+    BigInt operator!() const;
+    //Operadores matemáticos
+    friend BigInt operator+(const BigInt &A,const BigInt &B);
+    friend BigInt operator-(const BigInt &A,const BigInt &B);
+    friend BigInt operator*(const BigInt &A,const BigInt &B);
 
-friend BigInt operator/(const BigInt &A,const BigInt &B);
-friend BigInt operator%(const BigInt &A,const BigInt &B);
+    friend BigInt operator/(const BigInt &A,const BigInt &B);
+    friend BigInt operator%(const BigInt &A,const BigInt &B);
 
-//Deslocamento a esquerda
-friend BigInt operator<<(const BigInt &A,int N);
-//Descolamento a direita
-friend BigInt operator>>(const BigInt &A,int N);
+    //Deslocamento a esquerda
+    friend BigInt operator<<(const BigInt &A,int N);
+    //Descolamento a direita
+    friend BigInt operator>>(const BigInt &A,int N);
 };
 ///Declarações de Funções clássicas
 //Operadores de comparação
 bool operator==(const BigInt &A,const BigInt &B);
 bool operator!=(const BigInt &A,const BigInt &B);
 bool operator<(const BigInt &A,const BigInt &B);
-bool operator>(const BigInt &A,const BigInt &B);
-bool operator<=(const BigInt &A,const BigInt &B);
-bool operator>=(const BigInt &A,const BigInt &B);
+inline bool operator>(const BigInt &A,const BigInt &B){return B < A;};
+inline bool operator<=(const BigInt &A,const BigInt &B){return !(B<A);};
+inline bool operator>=(const BigInt &A,const BigInt &B){return !(A<B);};
 
 #endif

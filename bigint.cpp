@@ -1,11 +1,11 @@
 #include "bigint.h"
 #include <iostream>
-/* ACRESCENTAR */
-// Biblioteca para usar o fabs e o log10
-#include <cmath>
-// Biblioteca para usar o abs()
-#include <cstdlib>
-
+/* ACRESCENTADO */
+#include <cmath> // Biblioteca para usar o fabs e o log10
+#include <cstdlib>    // abs
+#include <utility>    // Para usar o move
+#include <algorithm>  // Para usar o max
+#include <cctype> //Ao analisar o codigo encontrei no que já estava implementado as função isdigit() ao pesquisar sobre ela descobri que usa essa lib
 using namespace std;
 
 /// Construtor default.
@@ -18,7 +18,7 @@ BigInt::BigInt()
 {}
 
 /// Destrutor
-/* ACRESCENTAR */
+/* ACRESCENTADO */
 
 BigInt::~BigInt()
 {
@@ -27,7 +27,7 @@ BigInt::~BigInt()
 
 
 /// Construtor especifico PRIVADO que recebe o sinal e a quantidade de digitos
-/* ACRESCENTAR */
+/* ACRESCENTADO */
 BigInt::BigInt(bool IsNeg, int Size)
     : neg(IsNeg)
     // Criando teste contra erros USB (Basicamente o ternario serve para impedir que o tamanho do array seja nulo ou menor que isso)
@@ -47,7 +47,7 @@ BigInt::BigInt(const BigInt& B)
 }
 
 /// Atribuicao por copia
-/* ACRESCENTAR */
+/* ACRESCENTADO */
 BigInt& BigInt::operator=(const BigInt &B) {
     if (this == &B) return *this;
 
@@ -69,7 +69,7 @@ BigInt& BigInt::operator=(const BigInt &B) {
 
 
 /// Construtor por movimento
-/* ACRESCENTAR */
+/* ACRESCENTADO */
 BigInt::BigInt(BigInt &&B) noexcept
     : neg(B.neg)
     , nDig(B.nDig)
@@ -80,7 +80,7 @@ BigInt::BigInt(BigInt &&B) noexcept
     B.d = nullptr;
 }
 /// Atribuicao por movimento
-/* ACRESCENTAR */
+/* ACRESCENTADO */
 BigInt& BigInt::operator=(BigInt &&B) noexcept{
     if (this == &B) return *this;
 
@@ -102,7 +102,7 @@ BigInt& BigInt::operator=(BigInt &&B) noexcept{
 /// PODE (E PRECISA) RECEBER ACRESCIMOS, APENAS
 /// NAS PARTES INDICADAS POR /* ACRESCENTAR */
 BigInt::BigInt(long long int N)
-  /* ACRESCENTAR */
+  /* ACRESCENTADO */
   :BigInt(N<0, (N ==0) ? 1 : 1+int(log10(fabs(N))))
 {
   // Calcula os digitos, usando divisao inteira por 10
@@ -114,7 +114,7 @@ BigInt::BigInt(long long int N)
 }
 
 /// Conversor de BigInt para long long int
-/* ACRESCENTAR */
+/* ACRESCENTADO */
 long long int BigInt::toInt() const{
     // inicia o valor de teste como 0
     long long int val = 0;
@@ -152,7 +152,7 @@ int BigInt::operator[](int i) const{
 /// ******************
 
 /// Funcao privada que corrige o numero, caso haja inconsistencias
-/* ACRESCENTAR */
+/* ACRESCENTADO */
 
  void BigInt::correct(){
  // Elimina 0’s mais significativos
@@ -210,7 +210,7 @@ BigInt::BigInt(const string& S)
   }
 
   // Faz ter sinal (IsNeg) e numero de digitos (tamanho da string - ini) corretos
-  /* ACRESCENTAR */
+  /* ACRESCENTADO */
   // Aqui basicamente aproveitei o construtor já definido usamos ele para criar o BigInt com tamanho exato e o sinal correto
     BigInt temp(IsNeg, S.size()-ini);
     *this = move(temp);
@@ -236,7 +236,7 @@ BigInt::BigInt(const string& S)
 /// ******************
 
 /// Insercao (impressao)
-/* ACRESCENTAR */
+/* ACRESCENTADO */
 ostream &operator<<(ostream &O, const BigInt &B){
     /*
     O sinal ‘-‘, se o número for negativo;
@@ -252,7 +252,7 @@ ostream &operator<<(ostream &O, const BigInt &B){
         if(B.d[i]>= 0 && B.d[i]<= 9){
             O << B[i];
         }else{
-            O << "#";
+            O << '#';
         }
     }
     return O;
@@ -299,7 +299,7 @@ std::istream& operator>>(istream& I, BigInt& B)
     {
       // Faz o BigInt manter o sinal e passar a ter size()+1 digitos,
       // avancando todos para uma posicao mais significativa aa frente.
-      /* ACRESCENTAR */
+      /* ACRESCENTADO */
         BigInt temp(B.isNeg(), B.size()+1);
         for(int i=0; i< B.size(); ++i){
             temp.d[i+1] = B.d[i];
@@ -329,7 +329,7 @@ std::istream& operator>>(istream& I, BigInt& B)
 /// ******************
 
 /// Teste de igualdade
-/* ACRESCENTAR */
+/* ACRESCENTADO */
 //igualdade
 bool operator==(const BigInt &A,const BigInt &B){
     if(A.isNeg() != B.isNeg()) return false;
@@ -347,7 +347,7 @@ bool operator!=(const BigInt &A,const BigInt &B){
 
 
 /// Menor que
-/* ACRESCENTAR */
+/* ACRESCENTADO*/
 bool operator<(const BigInt &A,const BigInt &B){
     if(A.isNeg() != B.isNeg()) return A.isNeg();
 
@@ -367,25 +367,14 @@ bool operator<(const BigInt &A,const BigInt &B){
     }
     return false;
 }
-//Maior que
-bool operator>(const BigInt &A,const BigInt &B){
-    return B < A;
-}
-// Maior ou igual a
-bool operator>=(const BigInt &A,const BigInt &B){
-    return !(A<B);
-}
-// menor ou igual a
-bool operator<=(const BigInt &A,const BigInt &B){
-    return !(B<A);
-}
+
 
 /// ******************
 /// * FIM DA PARTE 4 *
 /// ******************
 
 /// Funcao privada que incrementa os digitos (o modulo) do numero
-/* ACRESCENTAR */
+/* ACRESCENTADO */
 void BigInt::increment(){
     int k =0;
     while(k<size()){
@@ -394,7 +383,7 @@ void BigInt::increment(){
             return;
         }
         d[k] = 0;
-        k++;
+        ++k;
     }
     // Aumenta nº de dígitos. Exemplo:
     // Antes do método: [9 9 9 9]
@@ -410,10 +399,10 @@ void BigInt::increment(){
 }
 
 /// Funcao privada que decrementa os digitos (o modulo) do numero
-/* ACRESCENTAR */
+/* ACRESCENTADO */
 void BigInt::decrement(){
     if(isZero()){
-        *this = BigInt(-1);
+        *this = -1;
         return;
     }
     int k=0;
@@ -423,7 +412,7 @@ void BigInt::decrement(){
             break;
         }
         d[k] = 9;
-        k++;
+        ++k;
     }
     correct();
 }
@@ -447,7 +436,7 @@ BigInt& BigInt::operator--()
 }
 
 /// Operador de incremento pos-fixado
-/* ACRESCENTAR */
+/* ACRESCENTADO */
 BigInt BigInt::operator++(int){
     BigInt temp = *this;
     ++(*this);
@@ -456,7 +445,7 @@ BigInt BigInt::operator++(int){
 
 
 /// Operador de decremento pos-fixado
-/* ACRESCENTAR */
+/* ACRESCENTADO */
 BigInt BigInt::operator--(int){
     BigInt temp = *this;
     --(*this);
@@ -469,7 +458,7 @@ BigInt BigInt::operator--(int){
 /// ******************
 
 /// Modulo (abs)
-/* ACRESCENTAR */
+/* ACRESCENTADO */
 BigInt abs(const BigInt &X){
     BigInt temp(X);
     temp.neg = false;
@@ -477,7 +466,7 @@ BigInt abs(const BigInt &X){
 }
 
 /// Negativo (unario)
-/* ACRESCENTAR */
+/* ACRESCENTADO */
 BigInt BigInt::operator-() const{
     if(isZero()) return *this;
 
@@ -487,7 +476,7 @@ BigInt BigInt::operator-() const{
 }
 
 /// Soma
-/* ACRESCENTAR */
+/* ACRESCENTADO */
 BigInt operator+(const BigInt &A,const BigInt &B){
     if(A.isZero()) return B;
     if(B.isZero()) return A;
@@ -510,7 +499,7 @@ BigInt operator+(const BigInt &A,const BigInt &B){
     return C;
 }
 /// Subtracao
-/* ACRESCENTAR */
+/* ACRESCENTADO */
 BigInt operator-(const BigInt &A,const BigInt &B){
     if(A.isZero()) return -B;
     if(B.isZero()) return A;
@@ -537,7 +526,7 @@ BigInt operator-(const BigInt &A,const BigInt &B){
 /// ******************
 
 /// Multiplicacao
-/* ACRESCENTAR */
+/* ACRESCENTADO */
 BigInt operator*(const BigInt &A,const BigInt &B){
     if(A.isZero() || B.isZero()) return 0;
 
@@ -563,7 +552,7 @@ BigInt operator*(const BigInt &A,const BigInt &B){
     return C;
 }
 /// Fatorial
-/* ACRESCENTAR */
+/* ACRESCENTADO */
 BigInt BigInt::operator!() const{
     if(isNeg()){
         cerr << "Nao existe fatorial de numero negativo"<< endl;
@@ -580,7 +569,7 @@ BigInt BigInt::operator!() const{
 /// ******************
 
 /// Deslocamento aa esquerda
-/* ACRESCENTAR */
+/* ACRESCENTADO */
 BigInt operator<<(const BigInt &A,int N){
     if(N<=0 || A.isZero()) return A;
 
@@ -591,7 +580,7 @@ BigInt operator<<(const BigInt &A,int N){
     return C;
 }
 /// Deslocamento aa direita
-/* ACRESCENTAR */
+/* ACRESCENTADO */
 BigInt operator>>(const BigInt &A,int N){
     if(N<=0 || A.isZero()) return A;
     if(N>=A.size()) return 0;
@@ -644,14 +633,14 @@ void BigInt::division(const BigInt &D, BigInt &Q, BigInt &R) const{
 }
 
 /// Quociente da divisao inteira
-/* ACRESCENTAR */
+/* ACRESCENTADO */
 BigInt operator/(const BigInt &A,const BigInt &B){
     BigInt Q,R;
     A.division(B,Q,R);
     return Q;
 }
 /// Resto da divisao inteira
-/* ACRESCENTAR */
+/* ACRESCENTADO */
 BigInt operator%(const BigInt &A,const BigInt &B){
     BigInt Q,R;
     A.division(B,Q,R);
